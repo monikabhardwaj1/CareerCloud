@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,7 +41,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicantEducationPoco.cs" />
+    <Compile Include="ApplicantJobApplicationPoco.cs" />
+    <Compile Include="ApplicantProfilePoco.cs" />
+    <Compile Include="ApplicantResumePoco.cs" />
+    <Compile Include="ApplicantSkillPoco.cs" />
+    <Compile Include="ApplicantWorkHistoryPoco.cs" />
+    <Compile Include="CompanyDescriptionPoco.cs" />
+    <Compile Include="CompanyJobDescriptionPoco.cs" />
+    <Compile Include="CompanyJobEducationPoco.cs" />
+    <Compile Include="CompanyJobPoco.cs" />
+    <Compile Include="CompanyJobSkillPoco.cs" />
+    <Compile Include="CompanyLocationPoco.cs" />
+    <Compile Include="CompanyProfilePoco.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SecurityLoginLogPoco.cs" />
+    <Compile Include="SecurityLoginPoco.cs" />
+    <Compile Include="SecurityLoginRolePoco.cs" />
+    <Compile Include="SecurityRolePoco.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
