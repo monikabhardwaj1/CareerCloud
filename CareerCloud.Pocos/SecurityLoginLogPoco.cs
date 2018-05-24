@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CareerCloud.Pocos
 {
-    [Table("Security_Logins_Log")}
+    [Table("Security_Logins_Log")]
     public class SecurityLoginLogPoco
     {
         [Key]
