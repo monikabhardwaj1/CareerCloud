@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CareerCloud.Pocos
 {
     [Table("Security_Logins")]
-    public class SecurityLoginPoco
+    public class SecurityLoginPoco : IPoco
     {
         [Key]
         public Guid Id { get; set; }
@@ -19,13 +19,13 @@ namespace CareerCloud.Pocos
         public string Password { get; set; }
 
         [Column("Created_Date")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime Created { get; set; }//public DateTime CreatedDate { get; set; }
 
         [Column("Password_Update_Date")]
-        public DateTime? PasswordUpdateDate { get; set; }
+        public DateTime? PasswordUpdate { get; set; }//public DateTime? PasswordUpdateDate { get; set; }
 
-        [Column("Agreement_Accepeted_Date")]
-        public DateTime? AgreementAcceptedDate { get; set; }
+        [Column("Agreement_Accepted_Date")]
+        public DateTime? AgreementAccepted { get; set; }//public DateTime? AgreementAcceptedDate { get; set; }
 
         [Column("Is_Locked")]
         public Boolean IsLocked { get; set; }
@@ -46,7 +46,7 @@ namespace CareerCloud.Pocos
         [Column("Force_Change_Password")]
         public Boolean ForceChangePassword { get; set; }
 
-        [Column("Preferred_Language")]
+        [Column("Prefferred_Language")]
         public string PrefferredLanguage { get; set; }
 
         [Column ("Time_Stamp")]

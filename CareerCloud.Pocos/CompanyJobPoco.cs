@@ -8,8 +8,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CareerCloud.Pocos
 {
-    [Table("Company_jobs")]
-    public class CompanyJobPoco
+    [Table("Company_Jobs")]
+    public class CompanyJobPoco : IPoco
     {
         [Key]
         public Guid Id { get; set; }

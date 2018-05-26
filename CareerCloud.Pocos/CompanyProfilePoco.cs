@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CareerCloud.Pocos
 {
     [Table("Company_Profiles")]
-    public class CompanyProfilePoco
+    public class CompanyProfilePoco : IPoco
     {
 
         [Key]
@@ -21,11 +21,11 @@ namespace CareerCloud.Pocos
         [Column ("Company_Website")]
         public string CompanyWebsite { get; set; }
 
-        [Column("Company_Phone")]
-        public string CompanyPhone { get; set; }
+        [Column("Contact_Phone")]
+        public string ContactPhone { get; set; }
 
-        [Column("Company_Name")]
-        public string CompanyName { get; set; }
+        [Column("Contact_Name")]
+        public string ContactName { get; set; }
 
         [Column("Company_Logo")]
         public Byte[] CompanyLogo { get; set; }

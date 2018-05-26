@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CareerCloud.Pocos
+namespace CareerCloud.Pocos 
 {
-    [Table("Applicant-Educations")]
-    public class ApplicantEducationPoco
+    [Table("Applicant_Educations")]
+    public class ApplicantEducationPoco : IPoco
     {
         [Key]
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
 
         public Guid Applicant { get; set; }
 
@@ -25,7 +25,7 @@ namespace CareerCloud.Pocos
         public DateTime? StartDate { get; set; }
 
         [Column("Completion_Date")]
-        public DateTime? Completion_Date { get; set; }
+        public DateTime? CompletionDate { get; set; }
 
         [Column("Completion_Percent")]
         public Byte? CompletionPercent { get; set; }

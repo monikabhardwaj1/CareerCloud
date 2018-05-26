@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CareerCloud.Pocos
 {
     [Table("Applicant_Skills")]
-    public class ApplicantSkillPoco
+    public class ApplicantSkillPoco : IPoco
     {
         [Key]
         public Guid Id { get; set; }
@@ -22,18 +22,18 @@ namespace CareerCloud.Pocos
         public string SkillLevel { get; set; }
 
         [Column("Start_Month")]
-        public Byte? StartMonth { get; set; }
+        public byte StartMonth { get; set; }
 
         [Column("Start_Year")]
         public Int32 StartYear { get; set; }
 
         [Column("End_Month")]
-        public Byte EndMonth { get; set; }
+        public byte EndMonth { get; set; }
         
         [Column("End_Year")]
         public Int32 EndYear { get; set; }
 
         [Column("Time_Stamp")]
-        public Byte[] TimeStamp { get; set; }
+        public byte[] TimeStamp { get; set; }
     }
 }
