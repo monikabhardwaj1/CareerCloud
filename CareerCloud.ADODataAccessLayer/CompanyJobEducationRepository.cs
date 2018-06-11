@@ -12,8 +12,10 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class CompanyJobEducationRepository : BaseADO, IDataRepository<CompanyJobEducationPoco>
     {
+        SqlConnection _connection;
         public void Add(params CompanyJobEducationPoco[] items)
         {
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -46,12 +48,13 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<CompanyJobEducationPoco> GetAll(params Expression<Func<CompanyJobEducationPoco, object>>[] navigationProperties)
         {
-            CompanyJobEducationPoco[] pocos = new CompanyJobEducationPoco[1000];
+            _connection = new SqlConnection(_connString);
+            CompanyJobEducationPoco[] pocos = new CompanyJobEducationPoco[2000];
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = _connection;
-                cmd.CommandText = "select * from Company_Jobs_Descriptions";
+                cmd.CommandText = "select * from Company_Job_Educations";
 
                 _connection.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -75,13 +78,13 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end whilec
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<CompanyJobEducationPoco> GetList(Expression<Func<CompanyJobEducationPoco, bool>> where, params Expression<Func<CompanyJobEducationPoco, object>>[] navigationProperties)
         {
             IQueryable<CompanyJobEducationPoco> pocos = GetAll().AsQueryable();
-            return pocos.Where(p => p != null).ToList();
+            return pocos.Where(where).ToList();
         }
 
         public CompanyJobEducationPoco GetSingle(Expression<Func<CompanyJobEducationPoco, bool>> where, params Expression<Func<CompanyJobEducationPoco, object>>[] navigationProperties)
@@ -92,12 +95,54 @@ namespace CareerCloud.ADODataAccessLayer
 
         public void Remove(params CompanyJobEducationPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (CompanyJobEducationPoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [Company_Job_Educations]                   
+                    WHERE id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params CompanyJobEducationPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (CompanyJobEducationPoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[Company_Job_Educations]
+                   SET 
+                      [Job] = @Job
+                      ,[Major] = @Major
+                      ,[Importance] = @Importance
+                               WHERE Id=@Id";
+
+                    
+                    cmd.Parameters.AddWithValue("@Job", poco.Job);
+                    cmd.Parameters.AddWithValue("@Major", poco.Major);
+                    cmd.Parameters.AddWithValue("@Importance", poco.Importance);
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }

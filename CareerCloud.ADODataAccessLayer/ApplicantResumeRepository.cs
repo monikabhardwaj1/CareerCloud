@@ -12,8 +12,11 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class ApplicantResumeRepository :BaseADO, IDataRepository<ApplicantResumePoco>
     {
+        SqlConnection _connection;
         public void Add(params ApplicantResumePoco[] items)
         {
+
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -46,6 +49,7 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<ApplicantResumePoco> GetAll(params Expression<Func<ApplicantResumePoco, object>>[] navigationProperties)
         {
+            _connection = new SqlConnection(_connString);
             ApplicantResumePoco[] pocos = new ApplicantResumePoco[1000];
             using (_connection)
             {
@@ -65,7 +69,8 @@ namespace CareerCloud.ADODataAccessLayer
 
                     poco.Applicant = reader.GetGuid(1);
                     poco.Resume = reader.GetString(2);
-                    poco.LastUpdated = (DateTime?)reader[3];                    
+                    // poco.LastUpdated = (DateTime?)reader[3]; 
+                    poco.LastUpdated = ( reader.IsDBNull(3)) ? (DateTime?)null : (DateTime)reader[3];
 
                     pocos[iPosition] = poco;
                     iPosition++;
@@ -73,13 +78,13 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end while
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<ApplicantResumePoco> GetList(Expression<Func<ApplicantResumePoco, bool>> where, params Expression<Func<ApplicantResumePoco, object>>[] navigationProperties)
         {
             IQueryable<ApplicantResumePoco> pocos = GetAll().AsQueryable();
-            return pocos.Where(p => p != null).ToList();
+            return pocos.Where(where).ToList();
         }
 
         public ApplicantResumePoco GetSingle(Expression<Func<ApplicantResumePoco, bool>> where, params Expression<Func<ApplicantResumePoco, object>>[] navigationProperties)
@@ -90,12 +95,54 @@ namespace CareerCloud.ADODataAccessLayer
 
         public void Remove(params ApplicantResumePoco[] items)
         {
-            throw new NotImplementedException();
+
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (ApplicantResumePoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [Applicant_Resumes]                   
+                    WHERE id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params ApplicantResumePoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (ApplicantResumePoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[Applicant_Resumes]
+                      SET 
+                    [Applicant] = @Applicant
+                     ,[Resume] = @Resume
+                   ,[Last_Updated] =@Last_Updated 
+                   WHERE Id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
+                    cmd.Parameters.AddWithValue("@Resume", poco.Resume);
+                    cmd.Parameters.AddWithValue("@Last_Updated", poco.LastUpdated);
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }

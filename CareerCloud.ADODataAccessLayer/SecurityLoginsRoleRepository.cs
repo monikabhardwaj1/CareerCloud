@@ -12,8 +12,10 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class SecurityLoginsRoleRepository : BaseADO, IDataRepository<SecurityLoginsRolePoco>
     {
+        SqlConnection _connection;
         public void Add(params SecurityLoginsRolePoco[] items)
         {
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -45,6 +47,7 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<SecurityLoginsRolePoco> GetAll(params Expression<Func<SecurityLoginsRolePoco, object>>[] navigationProperties)
         {
+            _connection = new SqlConnection(_connString);
             SecurityLoginsRolePoco[] pocos = new SecurityLoginsRolePoco[1000];
             using (_connection)
             {
@@ -65,7 +68,7 @@ namespace CareerCloud.ADODataAccessLayer
                     poco.Login = reader.GetGuid(1);
                     poco.Role = reader.GetGuid(2);
 
-                    poco.TimeStamp = (byte[])reader[3];
+                    poco.TimeStamp = reader.IsDBNull(3) ? null :  (byte[])reader[3];
 
                     pocos[iPosition] = poco;
                     iPosition++;
@@ -73,13 +76,13 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end whilec
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<SecurityLoginsRolePoco> GetList(Expression<Func<SecurityLoginsRolePoco, bool>> where, params Expression<Func<SecurityLoginsRolePoco, object>>[] navigationProperties)
         {
             IQueryable<SecurityLoginsRolePoco> pocos = GetAll().AsQueryable();
-            return pocos.Where(p => p != null).ToList();
+            return pocos.Where(where).ToList();
         }
 
         public SecurityLoginsRolePoco GetSingle(Expression<Func<SecurityLoginsRolePoco, bool>> where, params Expression<Func<SecurityLoginsRolePoco, object>>[] navigationProperties)
@@ -90,12 +93,52 @@ namespace CareerCloud.ADODataAccessLayer
 
         public void Remove(params SecurityLoginsRolePoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SecurityLoginsRolePoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [Security_Logins_Roles]                   
+                    WHERE id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params SecurityLoginsRolePoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SecurityLoginsRolePoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[Security_Logins_Roles]
+               SET 
+                  [Login] = @Login
+                  ,[Role] = @Role
+                               WHERE Id=@Id";
+
+                    
+                    cmd.Parameters.AddWithValue("@Login", poco.Login);
+                    cmd.Parameters.AddWithValue("@Role", poco.Role);
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }

@@ -12,8 +12,10 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class SystemCountryCodeRepository : BaseADO, IDataRepository<SystemCountryCodePoco>
     {
+        SqlConnection _connection;
         public void Add(params SystemCountryCodePoco[] items)
         {
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -44,6 +46,7 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<SystemCountryCodePoco> GetAll(params Expression<Func<SystemCountryCodePoco, object>>[] navigationProperties)
         {
+            _connection = new SqlConnection(_connString);
             SystemCountryCodePoco[] pocos = new SystemCountryCodePoco[1000];
             using (_connection)
             {
@@ -59,10 +62,8 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     SystemCountryCodePoco poco = new SystemCountryCodePoco();
 
-                    poco. = reader.GetString(0);
-
-                    poco.Code = reader.GetString(1);
-                    poco.Name = reader.GetString(2);
+                    poco.Code = reader.GetString(0);
+                    poco.Name = reader.GetString(1);
 
                     pocos[iPosition] = poco;
                     iPosition++;
@@ -70,13 +71,13 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end whilec
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<SystemCountryCodePoco> GetList(Expression<Func<SystemCountryCodePoco, bool>> where, params Expression<Func<SystemCountryCodePoco, object>>[] navigationProperties)
         {
             IQueryable<SystemCountryCodePoco> pocos = GetAll().AsQueryable();
-            return pocos.Where(p => p != null).ToList(); throw new NotImplementedException();
+            return pocos.Where(where).ToList();
         }
 
         public SystemCountryCodePoco GetSingle(Expression<Func<SystemCountryCodePoco, bool>> where, params Expression<Func<SystemCountryCodePoco, object>>[] navigationProperties)
@@ -87,12 +88,49 @@ namespace CareerCloud.ADODataAccessLayer
 
         public void Remove(params SystemCountryCodePoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SystemCountryCodePoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [System_Country_Codes]                   
+                    WHERE Code=@Code";
+
+                    cmd.Parameters.AddWithValue("@Code", poco.Code);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params SystemCountryCodePoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SystemCountryCodePoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[System_Country_Codes]
+                     SET 
+                     Name =@Name
+                      WHERE Code= @Code";
+                    
+                    cmd.Parameters.AddWithValue("@Name", poco.Name);
+                    cmd.Parameters.AddWithValue("@Code", poco.Code);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }

@@ -12,8 +12,10 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class SecurityLoginsLogRepository : BaseADO, IDataRepository<SecurityLoginsLogPoco>
     {
+        SqlConnection _connection;
         public void Add(params SecurityLoginsLogPoco[] items)
         {
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -47,7 +49,8 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<SecurityLoginsLogPoco> GetAll(params Expression<Func<SecurityLoginsLogPoco, object>>[] navigationProperties)
         {
-            SecurityLoginsLogPoco[] pocos = new SecurityLoginsLogPoco[1000];
+            _connection = new SqlConnection(_connString);
+            SecurityLoginsLogPoco[] pocos = new SecurityLoginsLogPoco[3000];
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -76,13 +79,13 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end whilec
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<SecurityLoginsLogPoco> GetList(Expression<Func<SecurityLoginsLogPoco, bool>> where, params Expression<Func<SecurityLoginsLogPoco, object>>[] navigationProperties)
         {
             IQueryable<SecurityLoginsLogPoco> pocos = GetAll().AsQueryable();
-            return pocos.Where(p => p != null).ToList();
+            return pocos.Where(where).ToList();
         }
 
         public SecurityLoginsLogPoco GetSingle(Expression<Func<SecurityLoginsLogPoco, bool>> where, params Expression<Func<SecurityLoginsLogPoco, object>>[] navigationProperties)
@@ -93,12 +96,55 @@ namespace CareerCloud.ADODataAccessLayer
 
         public void Remove(params SecurityLoginsLogPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SecurityLoginsLogPoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [Security_Logins_Log]                   
+                    WHERE id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params SecurityLoginsLogPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SecurityLoginsLogPoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[Security_Logins_Log]
+               SET 
+                  [Login] = @Login
+                  ,[Source_IP] = @Source_IP
+                  ,[Logon_Date] = @Logon_Date
+                  ,[Is_Succesful] = @Is_Succesful
+                               WHERE Id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Login", poco.Login);
+                    cmd.Parameters.AddWithValue("@Source_IP", poco.SourceIP);
+                    cmd.Parameters.AddWithValue("@Logon_Date", poco.LogonDate);
+                    cmd.Parameters.AddWithValue("@Is_Succesful", poco.IsSuccesful);
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }

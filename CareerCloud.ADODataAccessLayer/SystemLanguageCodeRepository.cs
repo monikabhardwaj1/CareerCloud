@@ -12,8 +12,10 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class SystemLanguageCodeRepository : BaseADO, IDataRepository<SystemLanguageCodePoco>
     {
+        SqlConnection _connection;
         public void Add(params SystemLanguageCodePoco[] items)
         {
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -22,7 +24,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                 foreach (SystemLanguageCodePoco poco in items)
                 {
-                    cmd.CommandText = @"IINSERT INTO [dbo].[System_Language_Codes]
+                    cmd.CommandText = @"INSERT INTO [dbo].[System_Language_Codes]
            ([LanguageID] ,[Name] ,[Native_Name])
      VALUES
                 (@LanguageID ,@Name ,@Native_Name)";
@@ -45,6 +47,7 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<SystemLanguageCodePoco> GetAll(params Expression<Func<SystemLanguageCodePoco, object>>[] navigationProperties)
         {
+            _connection = new SqlConnection(_connString);
             SystemLanguageCodePoco[] pocos = new SystemLanguageCodePoco[1000];
             using (_connection)
             {
@@ -71,27 +74,69 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end whilec
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<SystemLanguageCodePoco> GetList(Expression<Func<SystemLanguageCodePoco, bool>> where, params Expression<Func<SystemLanguageCodePoco, object>>[] navigationProperties)
         {
-            throw new NotImplementedException();
+            IQueryable<SystemLanguageCodePoco> pocos = GetAll().AsQueryable();
+            return pocos.Where(where).ToList();
         }
 
         public SystemLanguageCodePoco GetSingle(Expression<Func<SystemLanguageCodePoco, bool>> where, params Expression<Func<SystemLanguageCodePoco, object>>[] navigationProperties)
         {
-            throw new NotImplementedException();
+            IQueryable<SystemLanguageCodePoco> pocos = GetAll().AsQueryable();
+            return pocos.Where(where).FirstOrDefault(); 
         }
 
         public void Remove(params SystemLanguageCodePoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SystemLanguageCodePoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [System_Language_Codes]                   
+                    WHERE LanguageId=@LanguageId";
+
+                    cmd.Parameters.AddWithValue("@LanguageId", poco.LanguageID);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params SystemLanguageCodePoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (SystemLanguageCodePoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[System_Language_Codes]
+               SET 
+                  [Name] = @Name
+                  ,[Native_Name] = @Native_Name
+                      WHERE [LanguageID] = @LanguageID";
+
+                   
+                    cmd.Parameters.AddWithValue("@Name", poco.Name);
+                    cmd.Parameters.AddWithValue("@Native_Name", poco.NativeName);
+                    cmd.Parameters.AddWithValue("@LanguageID", poco.LanguageID);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }

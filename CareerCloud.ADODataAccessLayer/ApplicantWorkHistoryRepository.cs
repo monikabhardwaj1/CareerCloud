@@ -12,8 +12,10 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class ApplicantWorkHistoryRepository : BaseADO, IDataRepository<ApplicantWorkHistoryPoco>
     {
+        SqlConnection _connection;
         public void Add(params ApplicantWorkHistoryPoco[] items)
         {
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -56,6 +58,7 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<ApplicantWorkHistoryPoco> GetAll(params Expression<Func<ApplicantWorkHistoryPoco, object>>[] navigationProperties)
         {
+            _connection = new SqlConnection(_connString);
             ApplicantWorkHistoryPoco[] pocos = new ApplicantWorkHistoryPoco[1000];
             using (_connection)
             {
@@ -92,13 +95,13 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end while
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<ApplicantWorkHistoryPoco> GetList(Expression<Func<ApplicantWorkHistoryPoco, bool>> where, params Expression<Func<ApplicantWorkHistoryPoco, object>>[] navigationProperties)
         {
             IQueryable<ApplicantWorkHistoryPoco> pocos = GetAll().AsQueryable();
-            return pocos.Where(p => p != null).ToList();
+            return pocos.Where(where).ToList();
         }
 
         public ApplicantWorkHistoryPoco GetSingle(Expression<Func<ApplicantWorkHistoryPoco, bool>> where, params Expression<Func<ApplicantWorkHistoryPoco, object>>[] navigationProperties)
@@ -109,12 +112,68 @@ namespace CareerCloud.ADODataAccessLayer
 
         public void Remove(params ApplicantWorkHistoryPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (ApplicantWorkHistoryPoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [Applicant_Work_History]                   
+                    WHERE id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params ApplicantWorkHistoryPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (ApplicantWorkHistoryPoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[Applicant_Work_History]
+   SET 
+     [Applicant] =@Applicant
+      ,[Company_Name] =@Company_Name
+      ,[Country_Code] = @Country_Code
+      ,[Location] =@Location
+      ,[Job_Title] =@Job_Title
+      ,[Job_Description] = @Job_Description
+      ,[Start_Month] = @Start_Month
+      ,[Start_Year] = @Start_Year
+      ,[End_Month] = @End_Month
+      ,[End_Year] = @End_Year
+                   WHERE Id=@Id";
+
+                    
+                    cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
+                    cmd.Parameters.AddWithValue("@Company_Name", poco.CompanyName);
+                    cmd.Parameters.AddWithValue("@Country_Code", poco.CountryCode);
+                    cmd.Parameters.AddWithValue("@Location", poco.Location);
+                    cmd.Parameters.AddWithValue("@Job_Title", poco.JobTitle);
+                    cmd.Parameters.AddWithValue("@Job_Description", poco.JobDescription);
+                    cmd.Parameters.AddWithValue("@Start_Month", poco.StartMonth);
+                    cmd.Parameters.AddWithValue("@Start_Year", poco.StartYear);
+                    cmd.Parameters.AddWithValue("@End_Month", poco.EndMonth);
+                    cmd.Parameters.AddWithValue("@End_Year", poco.EndYear);
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }

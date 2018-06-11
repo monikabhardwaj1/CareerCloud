@@ -12,8 +12,11 @@ namespace CareerCloud.ADODataAccessLayer
 {
     public class CompanyJobDescriptionRepository : BaseADO, IDataRepository<CompanyJobDescriptionPoco>
     {
+        SqlConnection _connection;
+
         public void Add(params CompanyJobDescriptionPoco[] items)
         {
+            _connection = new SqlConnection(_connString);
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -46,7 +49,8 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<CompanyJobDescriptionPoco> GetAll(params Expression<Func<CompanyJobDescriptionPoco, object>>[] navigationProperties)
         {
-            CompanyJobDescriptionPoco[] pocos = new CompanyJobDescriptionPoco[1000];
+            _connection = new SqlConnection(_connString);
+            CompanyJobDescriptionPoco[] pocos = new CompanyJobDescriptionPoco[1500];
             using (_connection)
             {
                 SqlCommand cmd = new SqlCommand();
@@ -64,10 +68,10 @@ namespace CareerCloud.ADODataAccessLayer
                     poco.Id = reader.GetGuid(0);
 
                     poco.Job = reader.GetGuid(1);
-                    poco.JobName = reader.GetString(2);
-                    poco.JobDescriptions = reader.GetString(3);
+                    poco.JobName = reader.IsDBNull(2) ? null :  reader.GetString(2);
+                    poco.JobDescriptions = reader.IsDBNull(3) ? null : reader.GetString(3);
 
-                    poco.TimeStamp = (byte[])reader[4];
+                    poco.TimeStamp = reader.IsDBNull(4) ? null :  (byte[])reader[4];
 
                     pocos[iPosition] = poco;
                     iPosition++;
@@ -75,13 +79,13 @@ namespace CareerCloud.ADODataAccessLayer
                 }//end whilec
                 _connection.Close();
             }
-            return pocos;
+            return pocos.Where(p => p != null).ToList();
         }
 
         public IList<CompanyJobDescriptionPoco> GetList(Expression<Func<CompanyJobDescriptionPoco, bool>> where, params Expression<Func<CompanyJobDescriptionPoco, object>>[] navigationProperties)
         {
             IQueryable<CompanyJobDescriptionPoco> pocos = GetAll().AsQueryable();
-            return pocos.Where(p => p != null).ToList();
+            return pocos.Where(where).ToList();
         }
 
         public CompanyJobDescriptionPoco GetSingle(Expression<Func<CompanyJobDescriptionPoco, bool>> where, params Expression<Func<CompanyJobDescriptionPoco, object>>[] navigationProperties)
@@ -92,12 +96,53 @@ namespace CareerCloud.ADODataAccessLayer
 
         public void Remove(params CompanyJobDescriptionPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (CompanyJobDescriptionPoco poco in items)
+                {
+                    cmd.CommandText = @"Delete from  [Company_Jobs_Descriptions]                   
+                    WHERE id=@Id";
+
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
 
         public void Update(params CompanyJobDescriptionPoco[] items)
         {
-            throw new NotImplementedException();
+            _connection = new SqlConnection(_connString);
+            using (_connection)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = _connection;
+                foreach (CompanyJobDescriptionPoco poco in items)
+                {
+                    cmd.CommandText = @"UPDATE [dbo].[Company_Jobs_Descriptions]
+                         SET
+                  [Job] = @Job
+                  ,[Job_Name] = @Job_Name
+                  ,[Job_Descriptions] = @Job_Descriptions
+                               WHERE Id=@Id";
+                    
+                    cmd.Parameters.AddWithValue("@Job", poco.Job);
+                    cmd.Parameters.AddWithValue("@Job_Name", poco.JobName);
+                    cmd.Parameters.AddWithValue("@Job_Descriptions", poco.JobDescriptions);
+                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+
+                    _connection.Open();
+                    cmd.ExecuteNonQuery();
+                    _connection.Close();
+
+                }//end foreach
+            }//end using
         }
     }
 }
