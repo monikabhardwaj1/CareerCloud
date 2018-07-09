@@ -92,6 +92,8 @@ namespace CareerCloud.ADODataAccessLayer
                     poco.ForceChangePassword = reader.GetBoolean(11);
                     poco.PrefferredLanguage = reader.IsDBNull(12) ?null :  reader.GetString(12);
 
+                    
+
                     poco.TimeStamp = reader.IsDBNull(13) ? null :  (byte[])reader[13];
 
                     pocos[iPosition] = poco;
