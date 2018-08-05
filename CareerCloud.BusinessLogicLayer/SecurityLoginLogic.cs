@@ -18,6 +18,8 @@ namespace CareerCloud.BusinessLogicLayer
         {
         }
 
+
+
         public bool Authenticate(string userName, string password)
         {
             SecurityLoginPoco poco = base.GetAll().Where(s => s.Login == userName).FirstOrDefault();
