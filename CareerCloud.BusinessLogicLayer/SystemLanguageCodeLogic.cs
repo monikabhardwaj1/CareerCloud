@@ -28,6 +28,20 @@ namespace CareerCloud.BusinessLogicLayer
             _repository.Update(pocos);
         }
 
+        public List<SystemLanguageCodePoco> GetAll()
+        {
+            return _repository.GetAll().ToList();
+        }
+        public SystemLanguageCodePoco Get(string id)
+        {
+            return _repository.GetSingle(c => c.LanguageID == id);
+        }
+        public void Delete(SystemLanguageCodePoco[] pocos)
+        {
+            Verify(pocos);
+            _repository.Remove(pocos);
+        }
+
         protected void Verify(SystemLanguageCodePoco[] pocos)
         {
             List<ValidationException> exceptions = new List<ValidationException>();

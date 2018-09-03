@@ -25,7 +25,19 @@ namespace CareerCloud.BusinessLogicLayer
             Verify(pocos);
             base.Update(pocos);
         }
+        public override void Delete(CompanyJobPoco[] pocos)
+        {
+            base.Delete(pocos);
+        }
+        public override List<CompanyJobPoco> GetAll()
+        {
+            return base.GetAll();
+        }
 
+        public override CompanyJobPoco Get(Guid id)
+        {
+            return base.Get(id);
+        }
         protected override void Verify(CompanyJobPoco[] pocos)
         {
            

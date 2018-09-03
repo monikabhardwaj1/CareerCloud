@@ -24,7 +24,19 @@ namespace CareerCloud.BusinessLogicLayer
             Verify(pocos);
             base.Update(pocos);
         }
+        public override void Delete(ApplicantSkillPoco[] pocos)
+        {
+            base.Delete(pocos);
+        }
+        public override List<ApplicantSkillPoco> GetAll()
+        {
+            return base.GetAll();
+        }
 
+        public override ApplicantSkillPoco Get(Guid id)
+        {
+            return base.Get(id);
+        }
         protected override void Verify(ApplicantSkillPoco[] pocos)
         {
             List<ValidationException> exceptions = new List<ValidationException>();

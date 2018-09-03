@@ -28,6 +28,19 @@ namespace CareerCloud.BusinessLogicLayer
             Verify(pocos);
             _repository.Update(pocos);
         }
+        public  List<SystemCountryCodePoco> GetAll()
+        {
+            return _repository.GetAll().ToList();
+        }
+        public SystemCountryCodePoco Get(string id)
+        {
+            return _repository.GetSingle(c => c.Code == id);
+        }
+        public void Delete(SystemCountryCodePoco[] pocos)
+        {
+            Verify(pocos);
+            _repository.Remove(pocos);
+        }
 
         protected void Verify(SystemCountryCodePoco[] pocos)
         {
