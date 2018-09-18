@@ -40,6 +40,7 @@ namespace CareerCloud.BusinessLogicLayer
         protected override void Verify(ApplicantSkillPoco[] pocos)
         {
             List<ValidationException> exceptions = new List<ValidationException>();
+
             foreach(ApplicantSkillPoco poco in pocos)
             {
                 if (poco.StartMonth > 12)

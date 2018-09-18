@@ -15,10 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerCloud.EntityFramework
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerCloud.WCF", "CareerCloud.WCF\CareerCloud.WCF.csproj", "{7A83E7E9-5702-4340-A3C2-CE6E37794BFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerCloud.UnitTests.Assignment5", "C:\Users\Monika\source\repos\CareerCloud.UnitTests.Assignment5\CareerCloud.UnitTests.Assignment5\CareerCloud.UnitTests.Assignment5.csproj", "{943928D9-1890-4404-A8AF-5FF14079C136}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7A83E7E9-5702-4340-A3C2-CE6E37794BFE} = {7A83E7E9-5702-4340-A3C2-CE6E37794BFE}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerCloud.WebAPI", "CareerCloud.WebAPI\CareerCloud.WebAPI.csproj", "{555DAF49-E205-408D-8345-6AE2C5C7FB2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerCloud.UnitTests.Assignment6", "CareerCloud.UnitTests.Assignment6\CareerCloud.UnitTests.Assignment6\CareerCloud.UnitTests.Assignment6.csproj", "{878AFB57-B469-4CC7-A714-0E447A4DA8E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,10 +49,14 @@ Global
 		{7A83E7E9-5702-4340-A3C2-CE6E37794BFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A83E7E9-5702-4340-A3C2-CE6E37794BFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A83E7E9-5702-4340-A3C2-CE6E37794BFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{943928D9-1890-4404-A8AF-5FF14079C136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{943928D9-1890-4404-A8AF-5FF14079C136}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{943928D9-1890-4404-A8AF-5FF14079C136}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{943928D9-1890-4404-A8AF-5FF14079C136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{555DAF49-E205-408D-8345-6AE2C5C7FB2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{555DAF49-E205-408D-8345-6AE2C5C7FB2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{555DAF49-E205-408D-8345-6AE2C5C7FB2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{555DAF49-E205-408D-8345-6AE2C5C7FB2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{878AFB57-B469-4CC7-A714-0E447A4DA8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{878AFB57-B469-4CC7-A714-0E447A4DA8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{878AFB57-B469-4CC7-A714-0E447A4DA8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{878AFB57-B469-4CC7-A714-0E447A4DA8E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
